@@ -30,6 +30,7 @@ void loop() {
 }
 ```
 
+
 ---
 
 ## ✅ Bài 2: Gửi dữ liệu ngẫu nhiên lên ThingSpeak
@@ -69,6 +70,53 @@ void loop() {
   delay(15000);
 }
 ```
+
+**Mục tiêu:** Gửi nhiệt độ và độ ẩm giả lập lên ThingSpeak mỗi 15 giây.
+
+```cpp
+#include <WiFi.h>
+#include "ThingSpeak.h"
+
+const char* ssid = "Your_SSID";
+const char* password = "Your_PASSWORD";
+WiFiClient client;
+
+unsigned long channelID = 1234567;
+const char* writeAPIKey = "YOUR_WRITE_API_KEY";
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi connected");
+  ThingSpeak.begin(client);
+}
+
+void loop() {
+  float temp = random(200, 300) / 10.0;  // 20.0°C - 30.0°C
+  float humi = random(500, 800) / 10.0;  // 50.0% - 80.0%
+
+  ThingSpeak.setField(1, temp);
+  ThingSpeak.setField(2, humi);
+
+  int status = ThingSpeak.writeFields(channelID, writeAPIKey);
+  if (status == 200) {
+    Serial.println("Gửi thành công: T=" + String(temp) + "°C, H=" + String(humi) + "%");
+  } else {
+    Serial.println("Lỗi gửi: " + String(status));
+  }
+  delay(15000);
+}
+```
+
+🔍 **Gợi ý học sinh:**
+- Tạo thêm field (ánh sáng, áp suất...).
+- Dùng cảm biến thực thay vì random().
+- Truy cập ThingSpeak để kiểm tra giá trị đã gửi.
+
 
 ---
 
@@ -116,6 +164,12 @@ void loop() {
   }
 }
 ```
+
+🔍 **Gợi ý học sinh:**
+- Mở serial monitor xem địa chỉ IP của em  
+- Truy cập IP từ Serial Monitor (ví dụ: `192.168.1.57`) bằng trình duyệt.
+- Hiển thị thêm: độ ẩm, hình ảnh, trang trí HTML/CSS.
+- Dùng cảm biến thực thay cho random.
 
 ---
 
